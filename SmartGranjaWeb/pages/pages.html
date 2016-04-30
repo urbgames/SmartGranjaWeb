@@ -2,43 +2,100 @@
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
 <script src="js/jquery.min.js"></script>
+<script src="js/jquery-dateFormat.min.js"></script>
 
 <script>
-	$(document).ready(function() {
 
-		jQuery.ajax({
+	$(document).ready(function() {
+		//setInterval(getLeituraSensores, 1000);
+	});
+
+	function getLeituraSensores(){
+		$.ajax({
 			type : "GET",
-			url : "http://localhost:8080/SmartGranjaWeb/pessoa",
+			url : "http://localhost:8080/SmartGranjaWeb3/getleiturasensor",
 			success : function(data) {
-				console.log(data);
+				preencherFormularioSensores(data);
 			},
 			error : function(data) {
-				console.log(data);
+					console.log(data);
 			}
 		});
+	}
 
-		var pessoa = {};
-		pessoa.nome = 'Urbanno';
-		pessoa.idade = 10;
+	function preencherFormularioSensores(data){
+		$("#labelUmidade").html(data.umidade);
+		$("#labelTemperatura").html(data.temperatura);
+		$("#labelLuminosidade").html(data.luminosidade);
+	}
 
-		jQuery.ajax({
+	function getRelatorioDiario(){
+		$.ajax({
+			type : "GET",
+			url : "http://localhost:8080/SmartGranjaWeb3/gettodosrelatoriosdiarios",
+			success : function(data) {
+				listarRelatoriosDiarios(data);
+			},
+			error : function(data) {
+					console.log(data);
+			}
+		});
+	}
+
+	function listarRelatoriosDiarios(data){
+		$.map(data, function(item, i){
+			var date = new Date(item.data);
+			$("#listaRelatorio").append('<option value='+ item.id +'>'+ $.format.date(date,"dd/MM/yyyy") + '</option>');
+		});
+	}
+
+
+	function setRelatorioDiario(){
+
+		var relatorioDiario={};
+		relatorioDiario.id = $("#listaRelatorio").val();
+		relatorioDiario.mortalidade = $("#valorTaxaMortalidade").prop("value");
+
+		$.ajax({
 			type : "POST",
 			dataType : 'json',
 			contentType : "application/json; charset=utf-8",
-			data : JSON.stringify(pessoa),
-			url : "http://localhost:8080/SmartGranjaWeb/cadastrarpessoa",
+			data : JSON.stringify(relatorioDiario),
+			url : "http://localhost:8080/SmartGranjaWeb3/settodosrelatoriosdiarios",
 			success : function(data) {
+				alert("Relatório atualizado com sucesso.");
 			},
 			error : function(data) {
+					alert("Erro ao atualizar relatório.");
 			}
 		});
+	}
 
-	});
 </script>
 
 </head>
 <body>
+
+	<div id="umidade">
+		<label>Umidade: </label>
+		<label id="labelUmidade"></label>
+	</div>
+	<div id="temperatura">
+		<label>Temperatura: </label>
+		<label id="labelTemperatura"></label>
+	</div>
+	<div id="luminosidade">
+		<label>Luminosidade: </label>
+		<label id="labelLuminosidade"></label>
+	</div>
+
+</br>
+	<button onClick=getRelatorioDiario()> Listar Relatorio Diario </button>
+	<select id="listaRelatorio"></select>
+	<input id="valorTaxaMortalidade"></input>
+	<button onClick="setRelatorioDiario()"> Registrar Mortalidade</button>
 
 </body>
 </html>

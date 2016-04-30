@@ -1,12 +1,15 @@
 package control;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Vector;
 
-import model.LeituraSensores;
+import objects.LeituraSensores;
+import objects.RelatorioDiario;
+
 import model.LeituraSensoresDAO;
-import model.RelatorioDiario;
 import model.RelatorioDiarioDAO;
 import model.ArduinoDAO;
 
@@ -18,6 +21,7 @@ public class ControlePersistencia implements Observer {
 	private LeituraSensoresDAO leituraDAO;
 	private RelatorioDiarioDAO relatorioDAO;
 	private ArduinoDAO arduinoDAO;
+	private String inputLine = "0/0/0";
 
 	public ControlePersistencia() {
 		this.leituraDAO = new LeituraSensoresDAO();
@@ -26,8 +30,32 @@ public class ControlePersistencia implements Observer {
 		this.arduinoDAO.addObserver(this);
 	}
 
-	public String leituraAtual() {
+	public void atualizarRelatorio(RelatorioDiario relatorio) {
+		relatorioDAO.atualizarRelatorio(relatorio);
+	}
+
+	public String leituraSensorTexto() {
 		return arduinoDAO.getInputLine();
+	}
+
+	public List<RelatorioDiario> getTodosRelatoriosDiarios() {
+
+		Vector<RelatorioDiario> relatorioDiarios = relatorioDAO
+				.listarRelatorioDiarioVector();
+		return relatorioDiarios.subList(0, relatorioDiarios.size());
+
+	}
+
+	public LeituraSensores getleituraSensores() {
+
+		String[] entradas = inputLine.split("/");
+		LeituraSensores leituraSensor = new LeituraSensores();
+
+		leituraSensor.setUmidade(Float.parseFloat(entradas[0]));
+		leituraSensor.setTemperatura(Float.parseFloat(entradas[1]));
+		leituraSensor.setLuminosidade(Float.parseFloat(entradas[2]));
+
+		return leituraSensor;
 	}
 
 	public void persistirDados(String inputLine) {
@@ -57,13 +85,14 @@ public class ControlePersistencia implements Observer {
 
 			System.out.print("Umidade: " + entradas[0] + "\t");
 			System.out.print("Temperatura: " + entradas[1] + "\t");
-			// System.out.println("Luminosidade: " + entradas[2]);
+			System.out.println("Luminosidade: " + entradas[2]);
 
 		}
 	}
 
 	public void update(Observable arg0, Object arg1) {
 		persistirDados(arduinoDAO.getInputLine());
+		inputLine = arduinoDAO.getInputLine();
 
 	}
 

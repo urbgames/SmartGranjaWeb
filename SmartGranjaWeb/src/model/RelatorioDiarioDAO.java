@@ -11,6 +11,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import objects.RelatorioDiario;
+
+
 
 public class RelatorioDiarioDAO {
 
@@ -51,10 +54,10 @@ public class RelatorioDiarioDAO {
 		
 		Query query = manager.createQuery("from RelatorioDiario");
 		List<RelatorioDiario> lista =  query.getResultList();
-		
+				
 		Vector<RelatorioDiario> vectoRelatorio = new Vector<RelatorioDiario>();
 		for (RelatorioDiario relatorioDiario : lista) {
-			
+			System.out.println(relatorioDiario.getData());
 			vectoRelatorio.addElement(relatorioDiario);
 		}
 		

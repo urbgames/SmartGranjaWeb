@@ -1,5 +1,7 @@
 package view;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -8,34 +10,37 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.Provider;
 
-import objects.Pessoa;
+import objects.LeituraSensores;
+import objects.RelatorioDiario;
+import control.WebServiceController;
 
 @Path("")
 @Provider
 public class View {
-	
+
+	private final static WebServiceController serviceController = new WebServiceController();
+
 	@GET
-	@Path("/pessoa")
+	@Path("/getleiturasensor")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Pessoa getPessoa(){
-		
-		Pessoa pessoa = new Pessoa();
-		pessoa.setIdade(20);
-		pessoa.setNome("Vi");
-		
-		return pessoa;
-		
+	public LeituraSensores getLeituraSensor() {
+		return serviceController.getLeituraSensor();
 	}
-	
+
+	@GET
+	@Path("/gettodosrelatoriosdiarios")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<RelatorioDiario> getTodosRelatoriosDiarios() {
+		return serviceController.getTodosRelatoriosDiarios();
+	}
+
 	@POST
-	@Path("/cadastrarpessoa")
+	@Path("/settodosrelatoriosdiarios")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void cadastrarPessoa(Pessoa pessoa){
-		
-		Pessoa pessoa2 = pessoa;
-		System.out.println(pessoa2.getIdade());
-		System.out.println(pessoa.getNome());
-		
+	@Produces(MediaType.APPLICATION_JSON)
+	public RelatorioDiario setRelatorioDiario(RelatorioDiario relatorioDiario) {
+		serviceController.setRelatorioDiario(relatorioDiario);
+		return relatorioDiario;
 	}
 
 }
