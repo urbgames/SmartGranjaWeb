@@ -6,6 +6,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
+import objects.Delay;
 import objects.LeituraSensores;
 import objects.RelatorioDiario;
 
@@ -30,6 +31,10 @@ public class ControlePersistencia implements Observer {
 		this.arduinoDAO.addObserver(this);
 	}
 
+	public void setDelay(Delay delay){
+		this.delay=delay.getValor();
+	}
+	
 	public void atualizarRelatorio(RelatorioDiario relatorio) {
 		relatorioDAO.atualizarRelatorio(relatorio);
 	}
