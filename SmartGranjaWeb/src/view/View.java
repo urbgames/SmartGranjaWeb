@@ -1,6 +1,7 @@
 package view;
 
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -12,6 +13,7 @@ import javax.ws.rs.ext.Provider;
 
 import objects.Delay;
 import objects.LeituraSensores;
+import objects.ListaLeituraSensores;
 import objects.RelatorioDiario;
 import control.WebServiceController;
 
@@ -34,6 +36,13 @@ public class View {
 	public List<RelatorioDiario> getTodosRelatoriosDiarios() {
 		return serviceController.getTodosRelatoriosDiarios();
 	}
+	
+	@POST
+	@Path("/setleiturasensor")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void setLeituraSensor(LeituraSensores leituraSensores) {
+		System.out.println(leituraSensores);
+	}
 
 	@POST
 	@Path("/settodosrelatoriosdiarios")
@@ -48,9 +57,19 @@ public class View {
 	@Path("/setdelay")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Delay setdelay(Delay Delay) {
+	public Delay setDelay(Delay Delay) {
 		serviceController.setDaley(Delay);
 		return Delay;
+	}
+	
+	@POST
+	@Path("/getIntervaloLeituraSensor")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<ListaLeituraSensores> getIntervaloLeituraSensor(ListaLeituraSensores listaLeituraSensores) {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+		List<ListaLeituraSensores> leituraSensoresRetorno = serviceController.getIntervaloLeituraSensor(listaLeituraSensores);
+		return leituraSensoresRetorno;
 	}
 
 }

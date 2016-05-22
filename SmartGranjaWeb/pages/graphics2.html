@@ -1,0 +1,250 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-dateFormat.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/canvasjs.min.js"></script>
+<script type="text/javascript" src="js/jquery.canvasjs.min.js"></script>
+<script type="text/javascript" src="js/moment.js"></script>
+<script type="text/javascript" src="js/locale/pt-br.js"></script>
+<script type="text/javascript" src="js/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="css/menu.css">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="css/bootstrap-glyphicons.css">
+<link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css">
+	<script type="text/javascript">
+		
+		var dataTemperaturaArray=[];
+		var dataUmidadeArray=[];
+		var dataLuminosidadeArray=[];
+	
+		var dataChartUmidade = [];
+		var chartUmidade;
+		function updateUmidade(){
+			var chart = chartUmidade;
+			var dataArray = dataChartUmidade;
+			var tipoSensor = "umidade"
+			updateChart(chart,dataArray,tipoSensor,dataUmidadeArray);
+		
+		}		
+		
+		var dataChartLuminosidade = [];
+		var chartLuminosidade;
+		function updateLuminosidade(){
+			var chart = chartLuminosidade;
+			var dataArray = dataChartLuminosidade;
+			var tipoSensor = "luminosidade"
+			updateChart(chart,dataArray,tipoSensor,dataLuminosidadeArray);
+		
+		}
+		
+		var dataChartTemperatura = [];		
+		var chartTemperatura;
+		function updateTemperatura(){
+			var chart = chartTemperatura;
+			var dataArray = dataChartTemperatura;
+			var tipoSensor = "temperatura"
+			updateChart(chart,dataArray,tipoSensor,dataTemperaturaArray);
+		
+		}
+
+		var updateChart = function (chart,dataArray,tipoSensor,data) {
+			var time=0;			
+			$(data).each(function(index,dataItem){
+				console.log(dataItem);
+				dataArray.push({
+					x: dataItem.time,
+					y: dataItem.dados
+				});
+				time++;
+			});
+			chart.render();		
+		};
+		
+		$(document).ready(function() {
+
+			chartTemperatura = new CanvasJS.Chart("chartTemperatura",{
+			zoomEnabled: true,
+				title :{
+					text: "Temperatura"
+				},			
+				data: [{
+					type: "line",
+					xValueType: "dateTime",
+					showInLegend: false,
+					name: "Temperatura" ,
+					dataPoints: dataChartTemperatura 
+				}]
+			});
+			chartLuminosidade = new CanvasJS.Chart("chartLuminosidade",{
+			zoomEnabled: true,
+				title :{
+					text: "Luminosidade"
+				},			
+				data: [{
+					type: "line",
+					xValueType: "dateTime",
+					showInLegend: false,
+					name: "Luminosidade" ,
+					dataPoints: dataChartLuminosidade 
+				}]
+			});
+			chartUmidade = new CanvasJS.Chart("chartUmidade",{
+			zoomEnabled: true,
+				title :{
+					text: "Umidade"
+				},			
+				data: [{
+					type: "line",
+					xValueType: "dateTime",
+					showInLegend: false,
+					name: "Umidade" ,
+					dataPoints: dataChartUmidade 
+				}]
+			});		
+		
+	});
+	
+		function gerarGraficos(data){
+			$.map(data, function (dataMap){
+			
+			var date = new Date(dataMap.instante);
+			
+			var dataTemperatura={};
+			dataTemperatura.time = date;
+			dataTemperatura.dados = dataMap.temperatura;
+			dataTemperaturaArray.push(dataTemperatura);
+			
+			var dataUmidade={};
+			dataUmidade.time = date;
+			dataUmidade.dados = dataMap.umidade;
+			dataUmidadeArray.push(dataUmidade);
+			
+			var dataLuminosidade={};
+			dataLuminosidade.time = date;
+			dataLuminosidade.dados = dataMap.luminosidade;
+			dataLuminosidadeArray.push(dataLuminosidade);
+			
+			});
+			updateLuminosidade();
+			updateTemperatura();
+			updateUmidade();
+		}	
+	
+	function getIntervaloLeituraSensor(){
+			
+			var dataInicio = $('#datetimepickerInicioLuminosidade').find('input').val().split('/');
+			var dataFim = $('#datetimepickerFimLuminosidade').find('input').val().split('/');
+			dataInicio = dataInicio[2]+"-"+dataInicio[1] +"-"+dataInicio[0] + "T00:00:00";
+			dataFim = dataFim[2]+"-"+dataFim[1] +"-"+dataFim[0]+ "T23:59:59";
+			
+			var listaLeituraSensores ={}
+			listaLeituraSensores.dataInicio= dataInicio;
+			listaLeituraSensores.dataFim= dataFim;			
+			console.log(listaLeituraSensores);
+			
+			$.ajax({
+			type : "POST",
+			dataType : 'json',
+			contentType : "application/json; charset=utf-8",
+			data : JSON.stringify(listaLeituraSensores),
+			url : "http://localhost:8080/SmartGranjaWeb3/getIntervaloLeituraSensor",
+			success : function(data) {
+				gerarGraficos(data);
+			},
+			error : function(data) {
+				console.log(data);
+			}
+			});
+				
+		}
+		
+	</script>
+	<script type="text/javascript">
+		$(function () {
+			$('#datetimepickerInicioLuminosidade').datetimepicker({
+				locale: 'pt-br',
+				format: 'DD/MM/YYYY'
+			});
+			$('#datetimepickerFimLuminosidade').datetimepicker({
+				useCurrent: false,
+				locale: 'pt-br',
+				format: 'DD/MM/YYYY'
+			});
+			$("#datetimepickerInicioLuminosidade").on("dp.change", function (e) {
+				$('#datetimepickerFimLuminosidade').data("DateTimePicker").minDate(e.date);
+			});
+			$("#datetimepickerFimLuminosidade").on("dp.change", function (e) {
+				$('#datetimepickerInicioLuminosidade').data("DateTimePicker").maxDate(e.date);
+			});
+		});
+	</script>
+</head>
+<body>
+<nav class="navbar navbar-default">
+	<div class="navbar-header">
+      <a class="navbar-brand">Smart Granja API</a>
+    </div>
+	  <div class="container">
+		<div class="collapse navbar-collapse">
+		  <ul class="nav navbar-nav">
+			<li><a href="index.html">Home</a></li>
+			<li class="dropdown active">
+				<a class="dropdown-toggle" data-toggle="dropdown" href="#">Dashboard
+				<span class="caret"></span></a>
+				<ul class="dropdown-menu">
+				  <li><a href="graphics.html">Tempo real</a></li>
+				  <li><a href="graphics2.html">Histórico de leituras</a></li>
+				</ul>
+			  </li>
+		  </ul>
+		</div>
+	  </div>
+	</nav>
+	
+	<div class="container">
+	<div class="row">
+		<div class='col-md-2'>
+			<div class="form-group">
+				<label>Data início</label>
+				<div class='input-group date' id='datetimepickerInicioLuminosidade'>
+					<input type='text' class="form-control" />
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class='col-md-2'>
+			<div class="form-group">
+				<label>Data fim</label>
+				<div class='input-group date' id='datetimepickerFimLuminosidade'>
+					<input type='text' class="form-control" />
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+				</div>
+			</div>
+		</div>	
+		
+		</div>
+		<div class="row">
+		<div class='col-md-2'>
+			<div class="form-group">
+				<button onClick="getIntervaloLeituraSensor()" type='text' class="form-control">Confirmar</div>
+			</div>
+		</div>
+		</div>		
+	</div>
+	
+	<div>
+	<div id="chartLuminosidade" style="height: 300px; width:100%;"></div>
+	<div id="chartTemperatura" style="height: 300px; width:100%;"></div>
+	<div id="chartUmidade" style="height: 300px; width:100%;"></div>
+	</div>
+</body>
+</html>

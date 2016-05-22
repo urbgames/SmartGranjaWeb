@@ -6,8 +6,11 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
+import gnu.io.CommPortIdentifier;
+import gnu.io.NoSuchPortException;
 import objects.Delay;
 import objects.LeituraSensores;
+import objects.ListaLeituraSensores;
 import objects.RelatorioDiario;
 
 import model.LeituraSensoresDAO;
@@ -27,7 +30,7 @@ public class ControlePersistencia implements Observer {
 	public ControlePersistencia() {
 		this.leituraDAO = new LeituraSensoresDAO();
 		this.relatorioDAO = new RelatorioDiarioDAO();
-		this.arduinoDAO = new ArduinoDAO("COM5", 9600);
+		this.arduinoDAO = new ArduinoDAO("COM1", 9600);
 		this.arduinoDAO.addObserver(this);
 	}
 
@@ -107,6 +110,14 @@ public class ControlePersistencia implements Observer {
 
 	public void setDelay(int delay) {
 		this.delay = delay;
+	}
+
+	public List<ListaLeituraSensores> getIntervaloLeituraSensor(ListaLeituraSensores listaLeituraSensores) {
+		
+		List<ListaLeituraSensores> leituraSensoresRetorno = leituraDAO.getIntervaloLeituraSensor(listaLeituraSensores);
+		
+		return leituraSensoresRetorno;
+		
 	}
 
 }

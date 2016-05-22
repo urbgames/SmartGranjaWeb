@@ -1,0 +1,58 @@
+html, body{
+	padding: 0;
+	margin: 0;
+	width: 100%;
+}
+
+.box label{
+
+	color: #FFFFFF;
+	font-family: "Arial";
+}
+
+#faixa{
+
+	width: 100%;
+	height: 45px;
+	display: block;
+	background-color: rgb(72 ,153, 197);
+	
+}
+
+#panel-cadastro{
+
+	margin: 50px auto;
+	width: 40%;
+
+}
+
+.box{
+
+	position: relative;
+	display: inline-block;
+	width:32.9%;
+    height:25%;
+    border-radius: 10px;
+
+}
+
+.info{
+	margin-top: 30%;
+	font-size: 96px;
+}
+
+#umidade{
+	text-align: center;
+	background-color:#00BFFF;
+}
+#temperatura{
+
+	text-align: center;
+	background-color:#FF4040;
+}
+#luminosidade{
+	text-align: center;
+	float: right;
+	background-color:#FFA500;
+}
+

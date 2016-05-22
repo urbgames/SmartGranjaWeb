@@ -4,6 +4,7 @@ import java.util.List;
 
 import objects.Delay;
 import objects.LeituraSensores;
+import objects.ListaLeituraSensores;
 import objects.RelatorioDiario;
 
 
@@ -29,6 +30,10 @@ public class WebServiceController {
 		
 		controlePersistencia.setDelay(delay);
 		
+	}
+
+	public List<ListaLeituraSensores> getIntervaloLeituraSensor(ListaLeituraSensores listaLeituraSensores) {
+		return controlePersistencia.getIntervaloLeituraSensor(listaLeituraSensores);
 	}
 
 }

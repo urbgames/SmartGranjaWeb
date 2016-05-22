@@ -1,10 +1,22 @@
 package model;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 import objects.LeituraSensores;
+import objects.ListaLeituraSensores;
 
 
 
@@ -26,5 +38,16 @@ public class LeituraSensoresDAO {
 		manager.close();
 		factory.close();
 		
+	}
+
+	public List<ListaLeituraSensores> getIntervaloLeituraSensor(ListaLeituraSensores listaLeituraSensores) {
+		
+		Session session = manager.unwrap(Session.class);
+		Criteria criteria = session.createCriteria(LeituraSensores.class);
+		criteria.add(Restrictions.between("instante", listaLeituraSensores.getDataInicio(), listaLeituraSensores.getDataFim()));
+		criteria.addOrder(Order.asc("instante"));
+		List<ListaLeituraSensores> listaLeituraSensoresResultado =  criteria.list();
+		
+		return listaLeituraSensoresResultado;
 	}
 }
