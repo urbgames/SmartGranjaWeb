@@ -13,10 +13,14 @@
 <link rel="stylesheet" href="css/bootstrap.min.css">
 
 	<script type="text/javascript">
+	
+	var localServer="http://e22ae9e6.ngrok.io/SmartGranjaWeb3";
+	
 	function getLeituraSensores(chart,dataArray,tipoSensor){
 		$.ajax({
 			type : "GET",
-			url : "http://localhost:8080/SmartGranjaWeb3/getleiturasensor",
+			crossDomain: true,
+			url : localServer+"/getleiturasensor",
 			success : function(data) {
 				updateChart(chart,dataArray,tipoSensor,data);
 			},

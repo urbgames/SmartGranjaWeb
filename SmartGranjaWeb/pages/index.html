@@ -13,6 +13,7 @@
 
 <script>
 
+	var localServer="http://e22ae9e6.ngrok.io/SmartGranjaWeb3";
 
 	$(document).ready(function() {
 		setInterval(getLeituraSensores, 1000);
@@ -21,7 +22,8 @@
 	function getLeituraSensores(){
 		$.ajax({
 			type : "GET",
-			url : "http://localhost:8080/SmartGranjaWeb3/getleiturasensor",
+			crossDomain: true,
+			url : localServer+"/getleiturasensor",
 			success : function(data) {
 				preencherFormularioSensores(data);
 			},
@@ -40,7 +42,8 @@
 	function getRelatorioDiario(){
 		$.ajax({
 			type : "GET",
-			url : "http://localhost:8080/SmartGranjaWeb3/gettodosrelatoriosdiarios",
+			crossDomain: true,
+			url : localServer+"/gettodosrelatoriosdiarios",
 			success : function(data) {
 				console.log(data);
 				listarRelatoriosDiarios(data);
@@ -68,9 +71,10 @@
 		$.ajax({
 			type : "POST",
 			dataType : 'json',
+			crossDomain: true,
 			contentType : "application/json; charset=utf-8",
 			data : JSON.stringify(relatorioDiario),
-			url : "http://localhost:8080/SmartGranjaWeb3/settodosrelatoriosdiarios",
+			url : localServer+"/settodosrelatoriosdiarios",
 			success : function(data) {
 				alert("Relatório atualizado com sucesso.");
 			},

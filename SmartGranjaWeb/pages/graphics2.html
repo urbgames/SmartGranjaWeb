@@ -18,6 +18,8 @@
 <link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css">
 	<script type="text/javascript">
 		
+		var localServer="http://e22ae9e6.ngrok.io/SmartGranjaWeb3";
+		
 		var dataTemperaturaArray=[];
 		var dataUmidadeArray=[];
 		var dataLuminosidadeArray=[];
@@ -150,9 +152,10 @@
 			$.ajax({
 			type : "POST",
 			dataType : 'json',
+			crossDomain: true,
 			contentType : "application/json; charset=utf-8",
 			data : JSON.stringify(listaLeituraSensores),
-			url : "http://localhost:8080/SmartGranjaWeb3/getIntervaloLeituraSensor",
+			url : localServer+"/getIntervaloLeituraSensor",
 			success : function(data) {
 				gerarGraficos(data);
 			},
