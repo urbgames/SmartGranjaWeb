@@ -17,13 +17,13 @@
 <link rel="stylesheet" type="text/css" href="css/bootstrap-glyphicons.css">
 <link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css">
 	<script type="text/javascript">
-		
+
 		var localServer="http://e22ae9e6.ngrok.io/SmartGranjaWeb3";
-		
+
 		var dataTemperaturaArray=[];
 		var dataUmidadeArray=[];
 		var dataLuminosidadeArray=[];
-	
+
 		var dataChartUmidade = [];
 		var chartUmidade;
 		function updateUmidade(){
@@ -31,9 +31,9 @@
 			var dataArray = dataChartUmidade;
 			var tipoSensor = "umidade"
 			updateChart(chart,dataArray,tipoSensor,dataUmidadeArray);
-		
-		}		
-		
+
+		}
+
 		var dataChartLuminosidade = [];
 		var chartLuminosidade;
 		function updateLuminosidade(){
@@ -41,21 +41,21 @@
 			var dataArray = dataChartLuminosidade;
 			var tipoSensor = "luminosidade"
 			updateChart(chart,dataArray,tipoSensor,dataLuminosidadeArray);
-		
+
 		}
-		
-		var dataChartTemperatura = [];		
+
+		var dataChartTemperatura = [];
 		var chartTemperatura;
 		function updateTemperatura(){
 			var chart = chartTemperatura;
 			var dataArray = dataChartTemperatura;
 			var tipoSensor = "temperatura"
 			updateChart(chart,dataArray,tipoSensor,dataTemperaturaArray);
-		
+
 		}
 
 		var updateChart = function (chart,dataArray,tipoSensor,data) {
-			var time=0;			
+			var time=0;
 			$(data).each(function(index,dataItem){
 				console.log(dataItem);
 				dataArray.push({
@@ -64,91 +64,91 @@
 				});
 				time++;
 			});
-			chart.render();		
+			chart.render();
 		};
-		
+
 		$(document).ready(function() {
 
 			chartTemperatura = new CanvasJS.Chart("chartTemperatura",{
 			zoomEnabled: true,
 				title :{
 					text: "Temperatura"
-				},			
+				},
 				data: [{
 					type: "line",
 					xValueType: "dateTime",
 					showInLegend: false,
 					name: "Temperatura" ,
-					dataPoints: dataChartTemperatura 
+					dataPoints: dataChartTemperatura
 				}]
 			});
 			chartLuminosidade = new CanvasJS.Chart("chartLuminosidade",{
 			zoomEnabled: true,
 				title :{
 					text: "Luminosidade"
-				},			
+				},
 				data: [{
 					type: "line",
 					xValueType: "dateTime",
 					showInLegend: false,
 					name: "Luminosidade" ,
-					dataPoints: dataChartLuminosidade 
+					dataPoints: dataChartLuminosidade
 				}]
 			});
 			chartUmidade = new CanvasJS.Chart("chartUmidade",{
 			zoomEnabled: true,
 				title :{
 					text: "Umidade"
-				},			
+				},
 				data: [{
 					type: "line",
 					xValueType: "dateTime",
 					showInLegend: false,
 					name: "Umidade" ,
-					dataPoints: dataChartUmidade 
+					dataPoints: dataChartUmidade
 				}]
-			});		
-		
+			});
+
 	});
-	
+
 		function gerarGraficos(data){
 			$.map(data, function (dataMap){
-			
+
 			var date = new Date(dataMap.instante);
-			
+
 			var dataTemperatura={};
 			dataTemperatura.time = date;
 			dataTemperatura.dados = dataMap.temperatura;
 			dataTemperaturaArray.push(dataTemperatura);
-			
+
 			var dataUmidade={};
 			dataUmidade.time = date;
 			dataUmidade.dados = dataMap.umidade;
 			dataUmidadeArray.push(dataUmidade);
-			
+
 			var dataLuminosidade={};
 			dataLuminosidade.time = date;
 			dataLuminosidade.dados = dataMap.luminosidade;
 			dataLuminosidadeArray.push(dataLuminosidade);
-			
+
 			});
 			updateLuminosidade();
 			updateTemperatura();
 			updateUmidade();
-		}	
-	
+		}
+
 	function getIntervaloLeituraSensor(){
-			
+
 			var dataInicio = $('#datetimepickerInicioLuminosidade').find('input').val().split('/');
 			var dataFim = $('#datetimepickerFimLuminosidade').find('input').val().split('/');
 			dataInicio = dataInicio[2]+"-"+dataInicio[1] +"-"+dataInicio[0] + "T00:00:00";
 			dataFim = dataFim[2]+"-"+dataFim[1] +"-"+dataFim[0]+ "T23:59:59";
-			
+
 			var listaLeituraSensores ={}
 			listaLeituraSensores.dataInicio= dataInicio;
-			listaLeituraSensores.dataFim= dataFim;			
+			listaLeituraSensores.dataFim= dataFim;
 			console.log(listaLeituraSensores);
-			
+
 			$.ajax({
 			type : "POST",
 			dataType : 'json',
@@ -163,9 +163,9 @@
 				console.log(data);
 			}
 			});
-				
+
 		}
-		
+
 	</script>
 	<script type="text/javascript">
 		$(function () {
@@ -208,7 +208,7 @@
 		</div>
 	  </div>
 	</nav>
-	
+
 	<div class="container">
 	<div class="row">
 		<div class='col-md-2'>
@@ -232,8 +232,8 @@
 					</span>
 				</div>
 			</div>
-		</div>	
-		
+		</div>
+
 		</div>
 		<div class="row">
 		<div class='col-md-2'>
@@ -241,9 +241,9 @@
 				<button onClick="getIntervaloLeituraSensor()" type='text' class="form-control">Confirmar</div>
 			</div>
 		</div>
-		</div>		
+		</div>
 	</div>
-	
+
 	<div>
 	<div id="chartLuminosidade" style="height: 300px; width:100%;"></div>
 	<div id="chartTemperatura" style="height: 300px; width:100%;"></div>

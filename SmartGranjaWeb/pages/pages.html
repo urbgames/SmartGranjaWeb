@@ -8,7 +8,7 @@
 
 <script>
 
-	var localServer="http://d8f21056.ngrok.io/SmartGranjaWeb3";
+	var localServer="localhost:8080/SmartGranjaWeb3";
 
 	$(document).ready(function() {
 		setInterval(getLeituraSensores, 1000);
@@ -68,7 +68,7 @@
 			crossDomain: true,
 			contentType : "application/json; charset=utf-8",
 			data : JSON.stringify(relatorioDiario),
-			url : localServer+"/settodosrelatoriosdiarios",
+			url : localServer+"/setrelatoriosdiarios",
 			success : function(data) {
 				alert("Relatório atualizado com sucesso.");
 			},

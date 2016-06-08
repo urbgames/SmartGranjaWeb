@@ -37,6 +37,23 @@ public class View {
 		return serviceController.getTodosRelatoriosDiarios();
 	}
 	
+	
+	@POST
+	@Path("/getrelatoriosdiariosbydata")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public RelatorioDiario getrelatoriosdiariosbydata(RelatorioDiario relatorioDiario) {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+		return serviceController.getrelatoriosdiariosbydata(relatorioDiario);
+	}
+		
+	@GET
+	@Path("/gettomodifyrelatoriosdiarios")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<RelatorioDiario> getToModifyRelatoriosDiarios() {
+		return serviceController.getToModifyRelatoriosDiarios();
+	}
+	
 	@POST
 	@Path("/setleiturasensor")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -45,7 +62,7 @@ public class View {
 	}
 
 	@POST
-	@Path("/settodosrelatoriosdiarios")
+	@Path("/setrelatoriosdiarios")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public RelatorioDiario setRelatorioDiario(RelatorioDiario relatorioDiario) {

@@ -6,16 +6,13 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
+import model.ArduinoDAO;
+import model.LeituraSensoresDAO;
+import model.RelatorioDiarioDAO;
 import objects.Delay;
 import objects.LeituraSensores;
 import objects.ListaLeituraSensores;
 import objects.RelatorioDiario;
-
-import model.LeituraSensoresDAO;
-import model.RelatorioDiarioDAO;
-import model.ArduinoDAO;
 
 public class ControlePersistencia implements Observer {
 
@@ -34,24 +31,12 @@ public class ControlePersistencia implements Observer {
 		this.arduinoDAO.addObserver(this);
 	}
 
-	public void setDelay(Delay delay){
-		this.delay=delay.getValor();
-	}
-	
-	public void atualizarRelatorio(RelatorioDiario relatorio) {
-		relatorioDAO.atualizarRelatorio(relatorio);
+	public void setDelay(Delay delay) {
+		this.delay = delay.getValor();
 	}
 
 	public String leituraSensorTexto() {
 		return arduinoDAO.getInputLine();
-	}
-
-	public List<RelatorioDiario> getTodosRelatoriosDiarios() {
-
-		Vector<RelatorioDiario> relatorioDiarios = relatorioDAO
-				.listarRelatorioDiarioVector();
-		return relatorioDiarios.subList(0, relatorioDiarios.size());
-
 	}
 
 	public LeituraSensores getleituraSensores() {
@@ -113,11 +98,31 @@ public class ControlePersistencia implements Observer {
 	}
 
 	public List<ListaLeituraSensores> getIntervaloLeituraSensor(ListaLeituraSensores listaLeituraSensores) {
-		
+
 		List<ListaLeituraSensores> leituraSensoresRetorno = leituraDAO.getIntervaloLeituraSensor(listaLeituraSensores);
-		
+
 		return leituraSensoresRetorno;
-		
+
+	}
+
+	public void atualizarRelatorio(RelatorioDiario relatorio) {
+		relatorioDAO.atualizarRelatorio(relatorio);
+	}
+
+	public List<RelatorioDiario> getToModifyRelatoriosDiarios() {
+		Vector<RelatorioDiario> relatorioDiarios = relatorioDAO.getToModifyRelatoriosDiarios();
+		return relatorioDiarios.subList(0, relatorioDiarios.size());
+	}
+	
+	public List<RelatorioDiario> getTodosRelatoriosDiarios() {
+
+		Vector<RelatorioDiario> relatorioDiarios = relatorioDAO.listarRelatorioDiarioVector();
+		return relatorioDiarios.subList(0, relatorioDiarios.size());
+
+	}
+
+	public RelatorioDiario getrelatoriosdiariosbydata(RelatorioDiario relatorioDiario) {
+		return relatorioDAO.getrelatoriosdiariosbydata(relatorioDiario);
 	}
 
 }
