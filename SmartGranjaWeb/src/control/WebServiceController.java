@@ -2,6 +2,7 @@ package control;
 
 import java.util.List;
 
+import model.TreeGenerator;
 import objects.Delay;
 import objects.LeituraSensores;
 import objects.ListaLeituraSensores;
@@ -10,6 +11,7 @@ import objects.RelatorioDiario;
 public class WebServiceController {
 
 	private ControlePersistencia controlePersistencia = new ControlePersistencia();
+	private TreeGenerator treeGenerator = new TreeGenerator();
 
 	public LeituraSensores getLeituraSensor() {
 		return controlePersistencia.getleituraSensores();
@@ -43,4 +45,15 @@ public class WebServiceController {
 	public RelatorioDiario getrelatoriosdiariosbydata(RelatorioDiario relatorioDiario) {
 		return controlePersistencia.getrelatoriosdiariosbydata(relatorioDiario);		
 	}
+	
+	public String getArvore(){
+		String resultado="";
+		try {
+			resultado= treeGenerator.gerarArvore();
+		} catch (Exception e) {
+			resultado = e.toString();
+		}
+		return resultado;
+	}
+	
 }

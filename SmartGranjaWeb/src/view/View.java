@@ -24,6 +24,13 @@ public class View {
 	private final static WebServiceController serviceController = new WebServiceController();
 
 	@GET
+	@Path("/getarvore")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getArvore() {
+		return serviceController.getArvore();
+	}
+	
+	@GET
 	@Path("/getleiturasensor")
 	@Produces(MediaType.APPLICATION_JSON)
 	public LeituraSensores getLeituraSensor() {
@@ -51,6 +58,7 @@ public class View {
 	@Path("/gettomodifyrelatoriosdiarios")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<RelatorioDiario> getToModifyRelatoriosDiarios() {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 		return serviceController.getToModifyRelatoriosDiarios();
 	}
 	
@@ -66,6 +74,7 @@ public class View {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public RelatorioDiario setRelatorioDiario(RelatorioDiario relatorioDiario) {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 		serviceController.setRelatorioDiario(relatorioDiario);
 		return relatorioDiario;
 	}
