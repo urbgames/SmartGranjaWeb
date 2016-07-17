@@ -98,7 +98,7 @@ public class TreeGenerator {
 
 		String stgArvore = arvore.toString();
 		stgArvore = stgArvore.substring(35, stgArvore.length());
-		stgArvore += eval.toSummaryString();
+		//stgArvore += eval.toSummaryString();
 		System.out.println("aqui: " + stgArvore);
 		writer2.write(stgArvore); // salva fisicamente
 		writer2.close();
