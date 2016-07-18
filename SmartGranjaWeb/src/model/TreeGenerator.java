@@ -1,13 +1,9 @@
 package model;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.util.Random;
 
-import org.inra.qualscape.wekatexttoxml.WekaTextfileToXMLTextfile;
-
 import objects.LeituraSensores;
+import objects.Tree;
 import weka.classifiers.evaluation.Evaluation;
 import weka.classifiers.trees.J48;
 import weka.core.Instances;
@@ -17,9 +13,11 @@ import weka.filters.unsupervised.attribute.Remove;
 
 public class TreeGenerator {
 
-	LeituraSensoresDAO leituraDAO = new LeituraSensoresDAO();
+	private LeituraSensoresDAO leituraDAO = new LeituraSensoresDAO();
+	private Instances data;
+	private Tree tree;
 
-	public void criarLeituras(int quantidade) {
+	private void criarLeituras(int quantidade) {
 
 		for (int i = 0; i < quantidade; i++) {
 			LeituraSensores leitura = new LeituraSensores();
@@ -27,43 +25,24 @@ public class TreeGenerator {
 		}
 	}
 
-	public String gerarArvore () throws Exception {
+	public Tree gerarArvore () throws Exception {
 
-		TreeGenerator experimento = new TreeGenerator();
-		// Desmarcar essa linha para inserir as leituras no banco
-		//experimento.criarLeituras(450);
-
-		// Pegando os dados do banco (pode usar hibernate tbm)
-		InstanceQuery query = new InstanceQuery();
-		query.setUsername("root");
-		query.setPassword("");
-		query.setQuery("select * from leitura_sensores_experimento");
-		Instances data = query.retrieveInstances();
-
-		// opções (filtra os dados)
+		loadDataBase();
+		
 		String[] options = new String[2];
-		options[0] = "-R"; // "range"
-		options[1] = "1"; // first attribute
-		Remove remove = new Remove(); // new instance of filter
-		remove.setOptions(options); // set options
-		remove.setInputFormat(data); // inform filter about dataset **AFTER**
-										// setting options
-		Instances newData = Filter.useFilter(data, remove); // apply filter
+		options[0] = "-R";
+		options[1] = "1";
+		Remove remove = new Remove();
+		remove.setOptions(options); 
+		remove.setInputFormat(data);
 
-		// ???
+		Instances newData = Filter.useFilter(data, remove);
 		newData.setClassIndex(newData.numAttributes() - 1);
 
-		// Instancia a árvore
 		J48 arvore = new J48();
-
-		// Usar poda
 		arvore.setUnpruned(false);
-
-		// Cria classificador
 		arvore.buildClassifier(newData);
-		System.out.println(arvore);
 
-		// Validação cruzada
 		Evaluation eval = new Evaluation(newData);
 		eval.crossValidateModel(arvore, newData, 10, new Random(1));
 
@@ -76,67 +55,45 @@ public class TreeGenerator {
 		System.out.println("Mean absolute error: " + eval.meanAbsoluteError());
 		System.out.println("Root prior square error: " + eval.rootMeanPriorSquaredError());
 		System.out.println("to class detail: " + eval.toClassDetailsString());
-		// System.out.println("Cumulative Margin Distribuition: " +
-		// eval.toCumulativeMarginDistributionString());
+		System.out.println("Cumulative Margin Distribuition: " + eval.toCumulativeMarginDistributionString());
 		System.out.println("Matriz: " + eval.toMatrixString());
-		System.out.println("Summary: " + eval.toSummaryString());// Importante
+		System.out.println("Summary: " + eval.toSummaryString());
 		System.out.println("Weighted area under PRC: " + eval.weightedAreaUnderROC());
 		System.out.println("Weighted f-measure: " + eval.weightedFMeasure());
-
-		// Criar xml
-		BufferedWriter writer = new BufferedWriter(new FileWriter("E:/granjaTree/arvoreXML.xml"));
-		writer.write(""); // salva fisicamente
-		writer.close();
-
-		BufferedWriter writer2 = new BufferedWriter(new FileWriter("E:/granjaTree/arvoreTXT.txt"));
-
-		BufferedWriter writerTree = new BufferedWriter(new FileWriter("E:/granjaTree/tree.arff"));
-		writerTree.write(newData.toString());
-		writerTree.newLine();
-		writerTree.flush();
-		writerTree.close();
-
-		String stgArvore = arvore.toString();
-		stgArvore = stgArvore.substring(35, stgArvore.length());
-		//stgArvore += eval.toSummaryString();
-		System.out.println("aqui: " + stgArvore);
-		writer2.write(stgArvore); // salva fisicamente
-		writer2.close();
-
-		File arvoreTXT = new File("E:/granjaTree/arvoreTXT.txt");
-		File arvoreXML = new File("E:/granjaTree/arvoreXML.xml");
-
-		WekaTextfileToXMLTextfile toXML = new WekaTextfileToXMLTextfile(arvoreTXT, arvoreXML, true, true);
-		System.out.println(toXML.writeXmlFromWekaText());
-
+		System.out.println("Arvore: " + arvore.toString());
 		System.out.println(arvore.graph());
-		return arvore.graph();
+		
+		tree = new Tree();
+		tree.setErrorRate(""+eval.errorRate());
+		tree.setRevision(eval.getRevision());
+		tree.setKappa(""+eval.kappa());
+		tree.setkBInformation(""+eval.KBInformation());
+		tree.setKbRelativeInformation(""+eval.KBRelativeInformation());
+		tree.setkBMeanInformation(""+eval.KBMeanInformation());
+		tree.setMeanAbsoluteError(""+eval.meanAbsoluteError());
+		tree.setRootMeanPriorSquaredError(""+eval.rootMeanPriorSquaredError());
+		tree.setClassDetails(eval.toClassDetailsString());
+		tree.setCumulativeMarginDistribution(eval.toCumulativeMarginDistributionString());
+		tree.setMatrix(eval.toMatrixString());
+		tree.setSummary(eval.toSummaryString());
+		tree.setWeightedAreaUnderROC(""+eval.weightedAreaUnderROC());
+		tree.setWeightedFMeasure(""+eval.weightedFMeasure());
+		tree.setTree(arvore.toString());
+		tree.setTreeGraph(arvore.graph());
+		
+		
+		return tree;
 
-		// System.out.println(toXML.writeXmlFromWekaText());
-
-		// System.out.println("Lista: ");
-		// List list = eval.getMetricsToDisplay();
-		// for (Object object : list) {
-		// System.out.println(object);
-		// }
-
-		// Avaliação
-		// System.out.println("Avaliacao inicial: \n");
-		// Evaluation avaliacao = new Evaluation(newData);
-		// avaliacao.evaluateModel(arvore, newData);
-		// System.out.println("Instancias corretas: " + avaliacao.correct() +
-		// "\n");
-
-		// double[][] matriz = avaliacao.confusionMatrix();
-		// for (int i = 0; i < matriz.length; i++) {
-		// System.out.println("\n");
-		// for (int j = 0; j < matriz.length; j++) {
-		// System.out.print(matriz[i][j]);
-		// System.out.print(" ");
-		// }
-		// }
-		//
-
+	}
+	
+	private void loadDataBase() throws Exception{
+		
+		InstanceQuery query = new InstanceQuery();
+		query.setUsername("root");
+		query.setPassword("");
+		query.setQuery("select * from leitura_sensores_experimento");
+		data = query.retrieveInstances();
+		
 	}
 
 }

@@ -7,6 +7,7 @@ import objects.Delay;
 import objects.LeituraSensores;
 import objects.ListaLeituraSensores;
 import objects.RelatorioDiario;
+import objects.Tree;
 
 public class WebServiceController {
 
@@ -46,12 +47,12 @@ public class WebServiceController {
 		return controlePersistencia.getrelatoriosdiariosbydata(relatorioDiario);		
 	}
 	
-	public String getArvore(){
-		String resultado="";
+	public Tree getArvore(){
+		Tree resultado = null;
 		try {
 			resultado= treeGenerator.gerarArvore();
 		} catch (Exception e) {
-			resultado = e.toString();
+			System.err.println(e.toString());
 		}
 		return resultado;
 	}

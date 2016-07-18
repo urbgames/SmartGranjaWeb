@@ -55,3 +55,6 @@ html, body{
 	background-color:#FFA500;
 }
 
+textarea {
+	resize:vertical;
+}

@@ -15,6 +15,7 @@ import objects.Delay;
 import objects.LeituraSensores;
 import objects.ListaLeituraSensores;
 import objects.RelatorioDiario;
+import objects.Tree;
 import control.WebServiceController;
 
 @Path("")
@@ -26,7 +27,7 @@ public class View {
 	@GET
 	@Path("/getarvore")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getArvore() {
+	public Tree getArvore() {
 		return serviceController.getArvore();
 	}
 	
