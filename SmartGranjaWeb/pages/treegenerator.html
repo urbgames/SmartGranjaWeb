@@ -61,7 +61,10 @@
 
 		function creatGraphTree(DOTstring){
 
+			DOTstring = 'digraph J48Tree {N0 [label="umidade" ]N0->N1 [label="<= 52"]N1 [label="alta (58.0/15.0)" shape=box style=filled ]N0->N2 [label="> 52"]N2 [label="temperatura" ]N2->N3 [label="<= 23.5"]N3 [label="alta (39.0/8.0)" shape=box style=filled ]N2->N4 [label="> 23.5"]N4 [label="temperatura" ]N4->N5 [label="<= 25"]N5 [label="umidade" ]N5->N6 [label="<= 54.5"]N6 [label="baixa (285.0/47.0)" shape=box style=filled ]N5->N7 [label="> 54.5"]N7 [label="alta (28.0/7.0)" shape=box style=filled ]N4->N8 [label="> 25"]N8 [label="alta (40.0/10.0)" shape=box style=filled ]}'
+			console.log(DOTstring);
 			var parsedData = vis.network.convertDot(DOTstring);
+			console.log(parsedData);
 			var data = {
 				nodes: parsedData.nodes,
 				edges: parsedData.edges
@@ -69,7 +72,9 @@
 			var container = document.getElementById('mynetwork');
 			var options = {
 				layout: {
-					hierarchical: {}
+					hierarchical: {
+						sortMethod:'directed'
+					}
 						}
 			};
 			var network = new vis.Network(container, data, options);
