@@ -14,7 +14,6 @@
 <script>
 
 		var localServer="http://localhost:8080/SmartGranjaWeb3";
-		var DOTstring = "";
 		var tree;
 
 		$(document).ready(function() {
@@ -54,7 +53,7 @@
 					loadPanelResult();
 				},
 				error : function(data) {
-					console.log("Erro ao obter árvore de decisão");
+					alert("Erro ao obter árvore de decisão");
 				}
 			});
 		}
@@ -76,6 +75,79 @@
 			};
 			var network = new vis.Network(container, data, options);
 
+		}
+
+
+		function zerarEntradasTeste(){
+			$("#luminosidadeTeste").val("");
+			$("#temperaturaTeste").val("");
+			$("#umidadeTeste").val("");
+			$("#resultadoTeste").val("");
+		}
+
+		function getLeituraSensores(){
+			zerarEntradasTeste();
+			$.ajax({
+				type : "GET",
+				crossDomain: true,
+				url : localServer+"/getleiturasensor",
+				success : function(data) {
+					preencherFormularioSensores(data);
+				},
+				error : function(data) {
+						alert("Erro ao obter dados dos sensores.");
+				}
+			});
+		}
+
+		function preencherFormularioSensores(data){
+			$("#luminosidadeTeste").val(data.umidade);
+			$("#temperaturaTeste").val(data.temperatura);
+			$("#umidadeTeste").val(data.luminosidade);
+		}
+
+		function getClassificacao(){
+
+			if (tree==null){
+				loadTree();
+			}
+
+			var leituraSensores={};
+	    leituraSensores.umidade = $("#umidadeTeste").val();
+			leituraSensores.temperatura = $("#temperaturaTeste").val();
+			leituraSensores.luminosidade = $("#luminosidadeTeste").val();
+
+			$.ajax({
+				type : "POST",
+				dataType : 'json',
+				crossDomain: true,
+				async: false,
+				contentType : "application/json; charset=utf-8",
+				data : JSON.stringify(leituraSensores),
+				url : localServer+"/getclassificacao",
+				success : function(data) {
+					carregarResultadoClassificacao(data);
+				},
+				error : function(data) {
+					alert("Erro ao atualizar relatório.");
+				}
+			});
+
+			function carregarResultadoClassificacao(data){
+				var resultado="";
+				switch(data) {
+				    case 0:
+				        resultado = "Mortalidade baixa";
+				        break;
+				    case 1:
+				        resultado = "Mortalidade média";
+				        break;
+						case 2:
+				        resultado = "Mortalidade alta";
+				        break;
+				}
+				$("#resultadoTeste").val(resultado);
+			}
 		}
 </script>
 
@@ -107,7 +179,6 @@
   	  </div>
 	</nav>
 
-	<div class="container">
 		<div class="row">
 			<div class="col-md-3">
 				<div class="panel panel-primary">
@@ -167,18 +238,41 @@
 						  <button onClick="loadTree()" class="btn btn-primary">Gerar árvore</button>
 						</div>
 					</div>
-			</div>
-			<div class="col-md-9">
-				<div class="panel panel-primary">
-				  <div class="panel-heading">Resultado</div>
-						<div class="panel-body">
-							<textarea class="form-control" rows="5" id="panelResulTree"></textarea>
-							<div id="mynetwork"></div>
-						</div>
 					</div>
+					<div class="col-md-6">
+						<div class="panel panel-primary">
+						  <div class="panel-heading">Resultado</div>
+								<div class="panel-body">
+									<textarea class="form-control" rows="5" id="panelResulTree"></textarea>
+									<div id="mynetwork"></div>
+								</div>
+							</div>
+						</div>
+				<div class="col-md-3">
+					<div class="panel panel-primary">
+					  <div class="panel-heading">Testar classificador</div>
+							<div class="panel-body">
+								  <div class="form-group">
+								    <label>Luminosidade:</label>
+								    <input class="form-control" id="luminosidadeTeste">
+								  </div>
+									<div class="form-group">
+								    <label>Temperatura:</label>
+								    <input class="form-control" id="temperaturaTeste">
+								  </div>
+									<div class="form-group">
+								    <label>Umidade:</label>
+								    <input class="form-control" id="umidadeTeste">
+								  </div>
+									<div class="form-group">
+								    <label>Resultado:</label>
+								    <input disabled="true" class="form-control" id="resultadoTeste">
+								  </div>
+									<button class="btn btn-primary" onCLick="getLeituraSensores()">Obter dados atuais</button>
+									<button class="btn btn-primary" onCLick="getClassificacao()">Classificar</button>
+							</div>
+						</div>
 				</div>
 			</div>
-		</div>
-	</div>
 </body>
 </html>

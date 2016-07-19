@@ -24,6 +24,15 @@ public class View {
 
 	private final static WebServiceController serviceController = new WebServiceController();
 
+	
+	@POST
+	@Path("/getclassificacao")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getClassificacao(LeituraSensores leituraSensores) {
+		return serviceController.getClassificacao(leituraSensores);
+	}
+	
 	@GET
 	@Path("/getarvore")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -63,13 +72,6 @@ public class View {
 		return serviceController.getToModifyRelatoriosDiarios();
 	}
 	
-	@POST
-	@Path("/setleiturasensor")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void setLeituraSensor(LeituraSensores leituraSensores) {
-		System.out.println(leituraSensores);
-	}
-
 	@POST
 	@Path("/setrelatoriosdiarios")
 	@Consumes(MediaType.APPLICATION_JSON)

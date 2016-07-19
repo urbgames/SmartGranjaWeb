@@ -60,7 +60,6 @@ public class RelatorioDiarioDAO {
 		
 		Vector<RelatorioDiario> vectoRelatorio = new Vector<RelatorioDiario>();
 		for (RelatorioDiario relatorioDiario : lista) {
-			System.out.println("mortalidade: " + relatorioDiario.getMortalidade());
 			vectoRelatorio.addElement(relatorioDiario);
 		}
 
@@ -81,7 +80,6 @@ public class RelatorioDiarioDAO {
 		Query query = manager.createQuery("from RelatorioDiario where mortalidade =:parametro01");
 		query.setParameter("parametro01", -1);
 		List<RelatorioDiario> lista = query.getResultList();
-		System.out.println(lista.size());
 		
 		Vector<RelatorioDiario> vectoRelatorio = new Vector<RelatorioDiario>();
 		for (RelatorioDiario relatorioDiario : lista) {
@@ -107,7 +105,6 @@ public class RelatorioDiarioDAO {
 		Session session = manager.unwrap(Session.class);
 		Criteria criteria = session.createCriteria(RelatorioDiario.class);
 		criteria.add(Restrictions.between("data", inicio, fim));
-		System.out.println(criteria.toString());
 		RelatorioDiario relatorioDiarioResult =  (RelatorioDiario) criteria.list().get(0);
 				
 		return relatorioDiarioResult;

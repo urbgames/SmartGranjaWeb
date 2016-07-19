@@ -35,8 +35,7 @@ public class ArduinoDAO extends Observable implements SerialPortEventListener {
 			try {
 				portaId = CommPortIdentifier.getPortIdentifier(portaCOM);
 			} catch (Exception e) {
-				System.out.println("Porta não foi encontrada: "
-						+ e.getMessage());
+				e.printStackTrace();
 			}
 
 			serialPort = (SerialPort) portaId.open("Comunicação", taxa);
@@ -62,9 +61,7 @@ public class ArduinoDAO extends Observable implements SerialPortEventListener {
 			serialPort.removeEventListener();
 			serialPort.close();
 		} catch (Exception e) {
-
-			System.err.println("Não foi possível fechar a porta: "
-					+ e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -73,8 +70,7 @@ public class ArduinoDAO extends Observable implements SerialPortEventListener {
 		try {
 			serialOut.write(opcao);
 		} catch (Exception e) {
-			System.err.println("Não foi possível enviar dados: "
-					+ e.getMessage());
+			e.printStackTrace();
 		}
 
 	}
@@ -89,7 +85,7 @@ public class ArduinoDAO extends Observable implements SerialPortEventListener {
 				notifyObservers();
 
 			} catch (Exception e) {
-				System.err.println(e.toString());
+				e.printStackTrace();
 			}
 		}
 	}

@@ -54,14 +54,16 @@ public class ControlePersistencia implements Observer {
 	public void persistirDados(String inputLine) {
 
 		quantidade++;
-		System.out.println(quantidade);
 		String[] entradas = inputLine.split("/");
 		LeituraSensores leitura = new LeituraSensores();
 
-		leitura.setUmidade(Float.parseFloat(entradas[0]));
-		leitura.setTemperatura(Float.parseFloat(entradas[1]));
-		leitura.setLuminosidade(Float.parseFloat(entradas[2]));
-		// Mostra os resultados na tela
+		try {
+			leitura.setUmidade(Float.parseFloat(entradas[0]));
+			leitura.setTemperatura(Float.parseFloat(entradas[1]));
+			leitura.setLuminosidade(Float.parseFloat(entradas[2]));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		if (quantidade >= delay) {
 
@@ -75,11 +77,6 @@ public class ControlePersistencia implements Observer {
 
 			leituraDAO.inserirLeitura(leitura);
 			quantidade = 0;
-
-			System.out.print("Umidade: " + entradas[0] + "\t");
-			System.out.print("Temperatura: " + entradas[1] + "\t");
-			System.out.println("Luminosidade: " + entradas[2]);
-
 		}
 	}
 

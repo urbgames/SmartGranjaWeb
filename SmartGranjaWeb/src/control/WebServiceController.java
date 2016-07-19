@@ -52,9 +52,19 @@ public class WebServiceController {
 		try {
 			resultado= treeGenerator.gerarArvore();
 		} catch (Exception e) {
-			System.err.println(e.toString());
+			e.printStackTrace();
 		}
 		return resultado;
 	}
-	
+
+	public String getClassificacao(LeituraSensores leituraSensores) {
+		String retorno="";
+		try {
+			retorno =  treeGenerator.classificarDados(leituraSensores);
+		} catch (Exception e) {
+			retorno = e.toString();
+		}
+		return retorno;
+	}
+
 }
