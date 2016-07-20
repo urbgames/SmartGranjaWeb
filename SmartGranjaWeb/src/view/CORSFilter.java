@@ -15,7 +15,6 @@ public class CORSFilter implements ContainerResponseFilter {
 	    ContainerResponse containerResponse) {
 	ResponseBuilder responseBuilder = Response
                 .fromResponse(containerResponse.getResponse());
-
 	responseBuilder.header("Access-Control-Allow-Origin", "*");
 	responseBuilder.header("Access-Control-Allow-Methods", 
                 "POST, GET, POST, PUT, OPTIONS");
@@ -23,9 +22,8 @@ public class CORSFilter implements ContainerResponseFilter {
                 "Foo-Header, X-Requested-With, Content-Type, X-Codingpedia");
         responseBuilder.header("Access-Control-Max-Age",
                 "86400");
-
 	containerResponse.setResponse(responseBuilder.build());
-
 	return containerResponse;
     }
+    
 }

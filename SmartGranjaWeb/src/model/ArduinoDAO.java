@@ -10,8 +10,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Observable;
 
-import control.ControlePersistencia;
-
 public class ArduinoDAO extends Observable implements SerialPortEventListener {
 
 	private OutputStream serialOut;
@@ -22,14 +20,12 @@ public class ArduinoDAO extends Observable implements SerialPortEventListener {
 	private String inputLine;
 
 	public ArduinoDAO(String portaCOM, int taxa) {
-
 		this.portaCOM = portaCOM;
 		this.taxa = taxa;
 		this.initialize();
 	}
 
 	public void initialize() {
-
 		try {
 			CommPortIdentifier portaId = null;
 			try {
@@ -37,26 +33,19 @@ public class ArduinoDAO extends Observable implements SerialPortEventListener {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 			serialPort = (SerialPort) portaId.open("Comunicação", taxa);
-			serialPort.setSerialPortParams(this.taxa, SerialPort.DATABITS_8,
-					SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-
-			input = new BufferedReader(new InputStreamReader(
-					serialPort.getInputStream()));
+			serialPort.setSerialPortParams(this.taxa, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+					SerialPort.PARITY_NONE);
+			input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
 			serialOut = serialPort.getOutputStream();
-
 			serialPort.addEventListener(this);
 			serialPort.notifyOnDataAvailable(true);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void close() {
-
 		try {
 			serialPort.removeEventListener();
 			serialPort.close();
@@ -66,24 +55,20 @@ public class ArduinoDAO extends Observable implements SerialPortEventListener {
 	}
 
 	public void enviarDados(int opcao) {
-
 		try {
 			serialOut.write(opcao);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
 	public void serialEvent(SerialPortEvent oEvent) {
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
-
 				inputLine = input.readLine();
 				setChanged();
 				notifyObservers();
-
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -97,4 +82,5 @@ public class ArduinoDAO extends Observable implements SerialPortEventListener {
 	public void setInputLine(String inputLine) {
 		this.inputLine = inputLine;
 	}
+
 }

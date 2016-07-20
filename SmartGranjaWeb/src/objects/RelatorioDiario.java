@@ -35,7 +35,6 @@ public class RelatorioDiario {
 		this.mortalidade = mortalidade;
 	}
 	
-	//método para mostrar apenas a data dd/mm/yyyy em forma de string no comboBox
 	public String toString() {
 		return new SimpleDateFormat("dd/MM/yyyy").format(this.data);
 	}

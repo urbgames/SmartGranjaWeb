@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
-
 import model.ArduinoDAO;
 import model.LeituraSensoresDAO;
 import model.RelatorioDiarioDAO;
@@ -17,8 +16,7 @@ import objects.RelatorioDiario;
 public class ControlePersistencia implements Observer {
 
 	private int quantidade = 0;
-	private int delay = 10; // Considerando o sleep do arduino de 1 seg o delay
-							// = 10 seg
+	private int delay = 10;
 	private LeituraSensoresDAO leituraDAO;
 	private RelatorioDiarioDAO relatorioDAO;
 	private ArduinoDAO arduinoDAO;
@@ -27,7 +25,7 @@ public class ControlePersistencia implements Observer {
 	public ControlePersistencia() {
 		this.leituraDAO = new LeituraSensoresDAO();
 		this.relatorioDAO = new RelatorioDiarioDAO();
-		this.arduinoDAO = new ArduinoDAO("COM1", 9600);
+		this.arduinoDAO = new ArduinoDAO("COM4", 9600);
 		this.arduinoDAO.addObserver(this);
 	}
 
@@ -40,23 +38,18 @@ public class ControlePersistencia implements Observer {
 	}
 
 	public LeituraSensores getleituraSensores() {
-
 		String[] entradas = inputLine.split("/");
 		LeituraSensores leituraSensor = new LeituraSensores();
-
 		leituraSensor.setUmidade(Float.parseFloat(entradas[0]));
 		leituraSensor.setTemperatura(Float.parseFloat(entradas[1]));
 		leituraSensor.setLuminosidade(Float.parseFloat(entradas[2]));
-
 		return leituraSensor;
 	}
 
 	public void persistirDados(String inputLine) {
-
 		quantidade++;
 		String[] entradas = inputLine.split("/");
 		LeituraSensores leitura = new LeituraSensores();
-
 		try {
 			leitura.setUmidade(Float.parseFloat(entradas[0]));
 			leitura.setTemperatura(Float.parseFloat(entradas[1]));
@@ -64,17 +57,11 @@ public class ControlePersistencia implements Observer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		if (quantidade >= delay) {
-
 			RelatorioDiario relatorio = relatorioDAO.getById(1);
 			Date time = new Date(System.currentTimeMillis());
-
-			// Preenche o restante dos dados de "leitura" necessários para a
-			// persistencia no BD
 			leitura.setInstante(time);
 			leitura.setRelatorio(relatorio);
-
 			leituraDAO.inserirLeitura(leitura);
 			quantidade = 0;
 		}
@@ -83,7 +70,6 @@ public class ControlePersistencia implements Observer {
 	public void update(Observable arg0, Object arg1) {
 		persistirDados(arduinoDAO.getInputLine());
 		inputLine = arduinoDAO.getInputLine();
-
 	}
 
 	public int getDelay() {
@@ -95,11 +81,8 @@ public class ControlePersistencia implements Observer {
 	}
 
 	public List<ListaLeituraSensores> getIntervaloLeituraSensor(ListaLeituraSensores listaLeituraSensores) {
-
 		List<ListaLeituraSensores> leituraSensoresRetorno = leituraDAO.getIntervaloLeituraSensor(listaLeituraSensores);
-
 		return leituraSensoresRetorno;
-
 	}
 
 	public void atualizarRelatorio(RelatorioDiario relatorio) {
@@ -110,12 +93,10 @@ public class ControlePersistencia implements Observer {
 		Vector<RelatorioDiario> relatorioDiarios = relatorioDAO.getToModifyRelatoriosDiarios();
 		return relatorioDiarios.subList(0, relatorioDiarios.size());
 	}
-	
-	public List<RelatorioDiario> getTodosRelatoriosDiarios() {
 
+	public List<RelatorioDiario> getTodosRelatoriosDiarios() {
 		Vector<RelatorioDiario> relatorioDiarios = relatorioDAO.listarRelatorioDiarioVector();
 		return relatorioDiarios.subList(0, relatorioDiarios.size());
-
 	}
 
 	public RelatorioDiario getrelatoriosdiariosbydata(RelatorioDiario relatorioDiario) {

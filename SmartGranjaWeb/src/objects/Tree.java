@@ -107,7 +107,7 @@ public class Tree {
 		return summary;
 	}
 	public void setSummary(String summary) {
-		summary = summary;
+		this.summary = summary;
 	}
 	public String getkBMeanInformation() {
 		return kBMeanInformation;

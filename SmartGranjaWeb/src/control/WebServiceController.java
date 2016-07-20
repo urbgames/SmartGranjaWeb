@@ -1,7 +1,6 @@
 package control;
 
 import java.util.List;
-
 import model.TreeGenerator;
 import objects.Delay;
 import objects.LeituraSensores;
@@ -23,20 +22,15 @@ public class WebServiceController {
 	}
 
 	public void setDaley(Delay delay) {
-
 		controlePersistencia.setDelay(delay);
-
 	}
 
 	public List<ListaLeituraSensores> getIntervaloLeituraSensor(ListaLeituraSensores listaLeituraSensores) {
 		return controlePersistencia.getIntervaloLeituraSensor(listaLeituraSensores);
 	}
 
-
 	public void setRelatorioDiario(RelatorioDiario relatorioDiario) {
-
 		controlePersistencia.atualizarRelatorio(relatorioDiario);
-
 	}
 
 	public List<RelatorioDiario> getToModifyRelatoriosDiarios() {
@@ -44,13 +38,13 @@ public class WebServiceController {
 	}
 
 	public RelatorioDiario getrelatoriosdiariosbydata(RelatorioDiario relatorioDiario) {
-		return controlePersistencia.getrelatoriosdiariosbydata(relatorioDiario);		
+		return controlePersistencia.getrelatoriosdiariosbydata(relatorioDiario);
 	}
-	
-	public Tree getArvore(){
+
+	public Tree getArvore() {
 		Tree resultado = null;
 		try {
-			resultado= treeGenerator.gerarArvore();
+			resultado = treeGenerator.gerarArvore();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -58,9 +52,9 @@ public class WebServiceController {
 	}
 
 	public String getClassificacao(LeituraSensores leituraSensores) {
-		String retorno="";
+		String retorno = "";
 		try {
-			retorno =  treeGenerator.classificarDados(leituraSensores);
+			retorno = treeGenerator.classificarDados(leituraSensores);
 		} catch (Exception e) {
 			retorno = e.toString();
 		}
